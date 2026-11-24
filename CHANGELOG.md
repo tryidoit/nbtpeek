@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0
+- **Hover to expand:** rest the cursor on an item for 0.7s and the tooltip expands, no key needed. Adjustable
+  (or off) in the settings, `expandHoverMs` in the config file
+- Hold-to-expand is now optional and off by default (`expandKey`, was Shift). Existing config files keep their value
+- The "+N more lines" hint lists the ways to expand that are actually enabled
+- Docs cleanup, `.gitignore`
+
 ## 1.2.1
 - Fixed build errors on Minecraft 26.3: screens are opened with `Minecraft.gui.setScreen` (26.2+), color names
   no longer use the removed `ChatFormatting.getByName`

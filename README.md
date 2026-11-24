@@ -1,4 +1,4 @@
-# NBT Peek 1.2.1 (Fabric, client-side, Minecraft 26.3)
+# NBT Peek 1.3.0 (Fabric, client-side, Minecraft 26.3)
 
 Adds a compact, human readable **"Item data"** section to the bottom of every item tooltip, a
 **show ALL data** mode, and an in-game settings screen through **Mod Menu**.
@@ -12,7 +12,7 @@ Needs **JDK 25**. Then, in this folder:
 ```
 ./gradlew build          # Windows: gradlew.bat build
 ```
-The jar is `build/libs/nbtpeek-1.2.1.jar` (not the `-sources` one). Put it in your `mods` folder.
+The jar is `build/libs/nbtpeek-1.3.0.jar` (not the `-sources` one). Put it in your `mods` folder.
 
 The versions in `gradle.properties` are the ones from the official Fabric example mod for 26.3
 (Minecraft 26.3, Loader 0.20.1, Loom 1.19-SNAPSHOT, Fabric API 0.165.0+26.3, Gradle 9.8.2) plus
@@ -33,7 +33,7 @@ Block Entity Data:
    Status: in hive 5s of 30s; carrying nectar
 Custom Data:
  Cooldown Ticks: 1m 15s (1500 ticks)
-… +4 more lines (hold Shift or F3+H for more, Ctrl for ALL)
+… +4 more lines (keep hovering or F3+H for more, hold Ctrl for ALL)
 ```
 
 ## Show ALL data
@@ -58,7 +58,9 @@ For when you want literally everything:
 - **Bees:** count, hive and flower coordinates, time in hive, nectar, stung
 - **Attributes:** `+7 · Main Hand`, `+10% (of base)` when hidden by the item, or when expanded
 - **Effects, item stacks, books, player heads (skin id), lodestone targets, containers** (shulker/bundle summary)
-- **Hold Shift** (or F3+H): expanded view with exact enchantment levels, raw potion data, bulky components
+- **Hover to expand:** rest the cursor on an item for about 0.7s (or use F3+H) to get the expanded view with exact
+  enchantment levels, raw potion data and bulky components. No key needed. The delay is adjustable, or turn it off
+  and use the optional hold-to-expand key (Shift, Ctrl or Alt) instead
 - **Three layouts:** one per line, compact (several pairs per line), raw SNBT
 - **Presets:** Minimal / Balanced / Detailed / Everything in one click
 - **Filters:** `ignoredItems` and `onlyItems` (ids and globs like `*_sword`), `onlyComponents`,
@@ -74,17 +76,16 @@ For when you want literally everything:
   editable here.
 
 ## If it doesn't compile
-Minecraft 26.x renames things between snapshots, and I can't run the real game here. Most of the code
-only touches stable APIs and is checked against stand-ins for the Minecraft/Fabric classes (100+ checks).
-The errors you reported from a real build (`Minecraft#setScreen` is now `Minecraft#gui.setScreen` since 26.2,
-`ChatFormatting#getByName` is gone) are fixed in 1.2.1. If anything else fails, paste the compiler error: it is
-usually a one-line fix. The hold-to-expand/ALL key and the screen-size auto-fit use reflection (the window is
-found by type), so they can't break the build; if the window or GLFW can't be found they turn themselves off.
+Minecraft 26.x renames things between snapshots. Most of the code only touches stable APIs. The hold keys and
+the screen-size auto-fit use reflection (the window is found by type), so they can't break the build; if the
+window or GLFW can't be found those features turn themselves off. If a build fails, open an issue with the
+compiler error.
 
 ## Files
 - `JsonRenderer.java`: component JSON -> readable entries (no Minecraft classes, easy to test)
 - `Fmt.java`: naming, numbers, durations, text components, SNBT
 - `TooltipPeek.java`: builds the section, layouts, ALL mode, line budget, filters
 - `PeekConfig.java`, `Presets.java`, `View.java`: settings, presets, per-tooltip limits
+- `HoverExpand.java`: hover-to-expand timer
 - `ExpandKey.java`, `ScreenInfo.java`: reflection-based key and screen-size helpers
 - `menu/`: Mod Menu entry point and the paged settings screen
