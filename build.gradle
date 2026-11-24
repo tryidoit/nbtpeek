@@ -1,0 +1,65 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+    id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+// Mod Menu support is optional at BUILD time: set enable_modmenu=false in gradle.properties to build the core
+// mod without it (the settings screen and Mod Menu entry point are then left out; edit config/nbtpeek.json instead).
+def withModMenu = project.findProperty('enable_modmenu') != 'false'
+
+repositories {
+    if (withModMenu) {
+        maven {
+            name = "Terraformers"
+            url = "https://maven.terraformersmc.com/"
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    // Minecraft 26.1+ is unobfuscated: plain implementation, no mappings, no modImplementation
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    // Compile-only: the mod does NOT require Mod Menu at runtime.
+    if (withModMenu) {
+        compileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            if (!withModMenu) exclude 'dev/nbtpeek/menu/**'
+        }
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "withModMenu", withModMenu
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+        // fabric.mod.json lists the Mod Menu entry point on its own line; without Mod Menu, drop that line.
+        if (!withModMenu) {
+            filter { String line -> line.contains('ModMenuIntegration') ? null : line }
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 25
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
