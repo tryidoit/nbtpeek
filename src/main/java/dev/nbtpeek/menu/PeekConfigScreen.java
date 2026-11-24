@@ -57,7 +57,9 @@ public class PeekConfigScreen extends Screen {
             case "raw" -> "Raw SNBT";
             default -> "One per line";
         }, () -> cfg().style = next(cfg().style, "tree", "compact", "raw")));
-        general.add(new Opt("Expand key", () -> keyName(cfg().expandKey), () -> cfg().expandKey = next(cfg().expandKey, "shift", "ctrl", "alt", "none")));
+        general.add(new Opt("Expand on hover", () -> cfg().expandHoverMs < 0 ? "OFF" : (cfg().expandHoverMs / 1000.0) + "s",
+                () -> cfg().expandHoverMs = next(cfg().expandHoverMs, 400, 700, 1000, 1500, -1)));
+        general.add(new Opt("Expand key (hold)", () -> keyName(cfg().expandKey), () -> cfg().expandKey = next(cfg().expandKey, "shift", "ctrl", "alt", "none")));
         general.add(new Opt("Readable names", () -> onOff(cfg().readable), () -> cfg().readable = !cfg().readable));
         general.add(new Opt("Only with F3+H", () -> onOff(cfg().requireAdvancedTooltips),
                 () -> cfg().requireAdvancedTooltips = !cfg().requireAdvancedTooltips));

@@ -53,8 +53,9 @@ final class TooltipPeek {
         }
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, registries);
 
-        // "Expanded" = F3+H advanced tooltips OR the expand key is held. ALL data implies expanded.
-        boolean expanded = all || advancedTooltips || ExpandKey.isDown(cfg.expandKey);
+        // "Expanded" = F3+H, a rested cursor, or the optional expand key. ALL data implies expanded.
+        boolean dwelled = cfg.expandHoverMs >= 0 && HoverExpand.dwelled(stack, cfg.expandHoverMs);
+        boolean expanded = all || advancedTooltips || dwelled || ExpandKey.isDown(cfg.expandKey);
         int width = all ? Math.max(cfg.maxLineLength, ScreenInfo.charsAcross()) : cfg.maxLineLength;
         View view = View.of(cfg, expanded, all, width);
 
@@ -147,10 +148,13 @@ final class TooltipPeek {
     }
 
     private static String hint(PeekConfig cfg) {
-        String keys = "";
-        if (!cfg.expandKey.equals("none") && ExpandKey.available()) keys = ExpandKey.displayName(cfg.expandKey) + " or ";
-        String all = !cfg.allKey.equals("none") && ExpandKey.available() ? ", " + ExpandKey.displayName(cfg.allKey) + " for ALL" : "";
-        return " (hold " + keys + "F3+H for more" + all + ")";
+        boolean keys = ExpandKey.available();
+        List<String> ways = new ArrayList<>();
+        if (cfg.expandHoverMs >= 0) ways.add("keep hovering");
+        if (keys && !cfg.expandKey.equals("none")) ways.add("hold " + ExpandKey.displayName(cfg.expandKey));
+        ways.add("F3+H");
+        String all = keys && !cfg.allKey.equals("none") ? ", hold " + ExpandKey.displayName(cfg.allKey) + " for ALL" : "";
+        return " (" + String.join(" or ", ways) + " for more" + all + ")";
     }
 
     // ---------------------------------------------------------------- layouts

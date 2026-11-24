@@ -40,8 +40,14 @@ public final class PeekConfig {
      */
     public boolean readable = true;
 
-    /** Hold this key to show the expanded view, like F3+H does: shift, ctrl, alt or none. */
-    public String expandKey = "shift";
+    /**
+     * Rest the cursor on an item this many milliseconds to expand its tooltip, like F3+H does.
+     * -1 turns hover-to-expand off.
+     */
+    public int expandHoverMs = 700;
+
+    /** Optional: hold this key to expand instantly: shift, ctrl, alt or none. */
+    public String expandKey = "none";
 
     /** Only show the data section when advanced tooltips (F3+H) are on. */
     public boolean requireAdvancedTooltips = false;
@@ -218,8 +224,9 @@ public final class PeekConfig {
         maxListEntries = Math.max(1, maxListEntries);
         maxListEntriesAdvanced = Math.max(1, maxListEntriesAdvanced);
         allMaxLines = Math.max(-1, allMaxLines);
+        expandHoverMs = Math.max(-1, Math.min(10_000, expandHoverMs));
         style = oneOf(style, "tree", "tree", "compact", "raw");
-        expandKey = oneOf(expandKey, "shift", "shift", "ctrl", "alt", "none");
+        expandKey = oneOf(expandKey, "none", "shift", "ctrl", "alt", "none");
         allKey = oneOf(allKey, "ctrl", "shift", "ctrl", "alt", "none");
         if (preset == null) preset = "balanced";
 
