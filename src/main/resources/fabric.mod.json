@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "nbtpeek",
+  "version": "${version}",
+  "name": "NBT Peek",
+  "description": "Shows an item's hidden data (custom data, attributes, bees and hive/flower coordinates, lodestone targets, entity data, container summaries, books, effects, ...) in a compact, human readable tooltip section, with a show-ALL-data mode.",
+  "authors": [],
+  "license": "MIT",
+  "icon": "assets/nbtpeek/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "modmenu": ["dev.nbtpeek.menu.ModMenuIntegration"],
+    "client": ["dev.nbtpeek.NbtPeekClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.20.1",
+    "fabric-api": "*",
+    "minecraft": "~26.3",
+    "java": ">=25"
+  },
+  "suggests": {
+    "modmenu": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "update_checker": false
+    }
+  }
+}
